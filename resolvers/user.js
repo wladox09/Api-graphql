@@ -1,6 +1,5 @@
-const { uuid } = require('uuidv4');
-var db = require("../db");
-var usersCollection = db.collection('users');
+const db = require("../db");
+const usersCollection = db.collection('users');
 
 const getUser = async (id) => {
     var user = await db.query(`FOR u IN ${usersCollection.name} FILTER u.id == @id RETURN u`, {
@@ -20,15 +19,6 @@ const getUsers = async () => {
     return users != undefined ? users : [];
 }
 
-const create = async (user) => {
-    user.id = uuid();
-    user = await usersCollection.save(user).then(
-        meta => meta,
-        err => console.error('Failed to save document:', err)
-    );
-    return await usersCollection.document(user);
-}
-
 const update = async (user) => {
     var userOld = await getUser(user.id);
     user = await usersCollection.update(userOld, user).then(
@@ -41,6 +31,5 @@ const update = async (user) => {
 module.exports = {
     user: getUser,
     users: getUsers,
-    create: create,
-    update: update
+    update: update,
 };

@@ -4,7 +4,6 @@ const userSchema = `
         users: [User]
         },
         type Mutation {
-            create(name: String!, lastName: String!, email: String!): User
             update(id: String!, name: String!, lastName: String!): User
         },
         type User {
@@ -12,6 +11,6 @@ const userSchema = `
             email: String,
             name: String,
             lastName: String,
-    }`;
+        }`;
 
 module.exports = userSchema;

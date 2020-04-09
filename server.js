@@ -1,22 +1,39 @@
-var express = require("express");
-var graphqlHTTP = require("express-graphql");
-var { buildSchema } = require("graphql");
+const express = require("express");
+const graphqlHTTP = require("express-graphql");
+const { buildSchema } = require("graphql");
+const BodyParser = require("body-parser");
+const userSchema = require("./schemas/User");
+const userResolvers = require("./resolvers/user");
+const login = require("./services/login");
+const signIn = require("./services/signIn");
+const authorization = require("./middleware/authorization");
 
-var userSchema = require("./schemas/User");
-var userResolvers = require("./resolvers/user");
+const schema = userSchema;
+const root = userResolvers;
+const app = express();
 
-var schema = userSchema;
+app.use(BodyParser.json());
 
-var root = userResolvers
+app.post("/login", async (request, response) => {
+    const res = await login(request.body.email, request.body.password);
+    response.json(res);
+});
 
-var app = express();
+app.post("/signIn", async (request, response) => {
+    const res = await signIn(request.body.email, request.body.password,
+        request.body.name, request.body.lastName);
+    response.json(res);
+});
+
 app.use(
     "/graphql",
+    authorization,
     graphqlHTTP({
         schema: buildSchema(schema),
         rootValue: root,
         graphiql: true
     })
 );
-app.listen(4000);
-console.log("Running a GraphQL API server at http://localhost:4000/graphql");
+
+app.listen(4040);
+console.log("Running a API server at http://localhost:4040");
