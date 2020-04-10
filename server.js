@@ -25,15 +25,20 @@ app.post("/signIn", async (request, response) => {
     response.json(res);
 });
 
+const context = async (request) => {
+    return request.decodedToken;
+};
+
 app.use(
     "/graphql",
     authorization,
-    graphqlHTTP({
+    graphqlHTTP(async (request) => ({
         schema: buildSchema(schema),
         rootValue: root,
         graphiql: false,
-    })
+        context: () => context(request)
+    })),
 );
 
-app.listen(4040);
+app.listen(process.env.SERVERPORT);
 console.log("Running a API server...");

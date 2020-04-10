@@ -11,7 +11,8 @@ const getUser = async (id) => {
     return user[0];
 }
 
-const getUsers = async () => {
+const getUsers = async (_, context) => {
+    console.log(await context());
     var users = await usersCollection.all().then(
         cursor => cursor.map(doc => doc),
         err => console.error('Failed to fetch all documents.')
