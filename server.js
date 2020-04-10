@@ -31,9 +31,9 @@ app.use(
     graphqlHTTP({
         schema: buildSchema(schema),
         rootValue: root,
-        graphiql: true
+        graphiql: false,
     })
 );
 
 app.listen(4040);
-console.log("Running a API server at http://localhost:4040");
+console.log("Running a API server...");

@@ -1,11 +1,20 @@
 Database = require('arangojs').Database;
 
-try {
-    db = new Database('http://127.0.0.1:8529');
-    db.useBasicAuth("al_natural", "al_natural");
-    db.useDatabase('al_natural');
-} catch (error) {
-    console.log(error);
+class DB {
+    constructor() {
+        if (typeof DB.instance === "object") {
+            return DB.instance;
+        }
+        try {
+            this.db = new Database(process.env.DBHOST);
+            this.db.useBasicAuth(process.env.DBUSER, process.env.DBPASSWORD);
+            this.db.useDatabase(process.env.DBNAME);
+        } catch (error) {
+            console.log(error);
+        }
+        DB.instance = this;
+        return this;
+    }
 }
 
-module.exports = db;
+module.exports = new DB().db;
